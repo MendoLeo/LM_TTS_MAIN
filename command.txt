@@ -1,0 +1,16 @@
+## COMMAND TO TRANSFORM CSV TO JSON FILE
+
+./process_directory.sh /home/mendo/Downloads/LM/LM_news/TTS_data/Bulu_all/Bulu_bibCSV
+./process_directory.sh /home/mendo/Downloads/LM/LM_news/TTS_data/Ewondo_all/Ewondo_bibCSV
+./process_directory.sh /home/mendo/Downloads/LM/LM_news/TTS_data/Bafia_all/Bafia_bibCSV
+
+
+## COMMAND TO CONVERT MP3 AUDIO FILE TO WAV
+
+
+./convert_audio.sh /home/mendo/Downloads/LM/LM_news/TTS_data/Bulu_all/Bulu_NT_audio
+./convert_audio.sh /home/mendo/Downloads/LM/LM_news/TTS_data/Bulu_all/Bulu_AT_audio
+
+./convert_audio.sh /home/mendo/Downloads/LM/LM_news/TTS_data/Ewondo_all/Ewondo_NT_audio
+
+./convert_audio.sh /home/mendo/Downloads/LM/LM_news/TTS_data/Bafia_all/Bafia_NT_audio
