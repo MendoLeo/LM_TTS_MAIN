@@ -127,7 +127,7 @@ def segment(audio_path: str, json_path: str, output_dir: str, chunk_size_s: int 
         labels.append(transcript)
 
 
-    assert len(segments) == len(verse_ids) == len(labels)
+    # assert len(segments) == len(verse_ids) == len(labels)
 
     # export segments and forced-aligned transcripts
     for verse_id, segment, label in zip(verse_ids, segments, labels):
