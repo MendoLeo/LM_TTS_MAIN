@@ -109,16 +109,23 @@ def segment(audio_path: str, json_path: str, output_dir: str, chunk_size_s: int 
     # collect verse-level segments
     segments, labels, start = [], [], 0
     for verse_words in words:
-        end = start + len(verse_words)
-        verse_spans = word_only_spans[start:end]
-        ratio = input_waveform.size(1) / num_frames
-        x0 = int(ratio * verse_spans[0][0].start)
-        x1 = int(ratio * verse_spans[-1][-1].end)
-        transcript = " ".join(verse_words)
-        segment = input_waveform[:, x0:x1]
+    end = start + len(verse_words)
+    verse_spans = word_only_spans[start:end]
+    ratio = input_waveform.size(1) / num_frames
+    
+    if not verse_spans:
+        print(f"Warning: No alignment found for verse {start}-{end}. Skipping this verse.")
         start = end
-        segments.append(segment)
-        labels.append(transcript)
+        continue
+
+    x0 = int(ratio * verse_spans[0][0].start)
+    x1 = int(ratio * verse_spans[-1][-1].end)
+    transcript = " ".join(verse_words)
+    segment = input_waveform[:, x0:x1]
+    start = end
+    segments.append(segment)
+    labels.append(transcript)
+
 
     assert len(segments) == len(verse_ids) == len(labels)
 
