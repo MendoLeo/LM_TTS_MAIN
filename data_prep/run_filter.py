@@ -103,8 +103,8 @@ def main(args):
                 shutil.copy(transcript_path, output_transcript_path)
                 retained_count += 1
             else:
-                # Open the log file in append mode to write rejection
-                with open(log_file_path, "a") as log_file:
+                # Log the rejected audio path and probability difference
+                with open(log_file_path, 'a') as log_file:
                     log_file.write(f"Rejected: {audio_path} (Difference: {probability_difference})\n")
                 rejected_count += 1
 
@@ -141,8 +141,8 @@ def main(args):
                 shutil.copy(transcript_path, output_transcript_path)
                 retained_count += 1
             else:
-                # Open the log file in append mode to write rejection
-                with open(log_file_path, "a") as log_file:
+                # Log the rejected audio path and probability difference
+                with open(log_file_path, 'a') as log_file:
                     log_file.write(f"Rejected: {audio_path} (Difference: {probability_difference})\n")
                 rejected_count += 1
 
