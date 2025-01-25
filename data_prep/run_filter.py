@@ -3,6 +3,7 @@ import argparse
 import shutil
 import csv
 from tqdm.auto import tqdm
+from datetime import datetime
 
 from filter_audio import compute_probability_difference, compute_probability_difference_batched
 
@@ -28,7 +29,8 @@ parser.add_argument(
     "--batch_size",
     type=int,
     default=16,
-    help="Batch size for batch-filtering. Default to 16 (usable for P100 16GB).",)
+    help="Batch size for batch-filtering. Default to 16 (usable for P100 16GB).",
+)
 parser.add_argument(
     "--log_file",
     default="rejected_files_log.txt",
@@ -37,8 +39,8 @@ parser.add_argument(
 parser.add_argument(
     "--history_file",
     default="history.csv",
-    help="Path to the CSV file for storing book-level statistics. Default: history.csv in the current directory.",)
-
+    help="Path to the CSV file for storing book-level statistics. Default: history.csv in the current directory.",
+)
 
 def main(args):
     audio_dir = Path(args.audio_dir)
@@ -48,16 +50,23 @@ def main(args):
     log_file_path = Path(args.log_file)
     log_file_path.parent.mkdir(parents=True, exist_ok=True)
 
-    with open(log_file_path, "w") as log_file:
-        log_file.write("Rejected Files Log\n")
-        log_file.write("===================\n")
+    # Check if log file exists
+    log_file_exists = log_file_path.exists()
+    with open(log_file_path, "a") as log_file:
+        if not log_file_exists:
+            log_file.write("Rejected Files Log\n")
+            log_file.write("===================\n")
 
     # Prepare history file
     history_file_path = Path(args.history_file)
     history_file_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(history_file_path, "w", newline="") as history_file:
-        csv_writer = csv.writer(history_file)
-        csv_writer.writerow(["Book", "Retained", "Rejected"])  # Header
+
+    # Check if history file exists
+    history_file_exists = history_file_path.exists()
+    if not history_file_exists:
+        with open(history_file_path, "w", newline="") as history_file:
+            csv_writer = csv.writer(history_file)
+            csv_writer.writerow(["Book", "Retained", "Rejected"])  # Header
 
     # Process each book
     current_book = None
@@ -67,7 +76,7 @@ def main(args):
     def write_book_stats(book_name):
         """Helper function to write stats to the CSV."""
         nonlocal retained_count, rejected_count
-        if current_book:
+        if book_name:
             with open(history_file_path, "a", newline="") as history_file:
                 csv_writer = csv.writer(history_file)
                 csv_writer.writerow([book_name, retained_count, rejected_count])
@@ -105,7 +114,8 @@ def main(args):
             else:
                 # Log the rejected audio path and probability difference
                 with open(log_file_path, 'a') as log_file:
-                    log_file.write(f"Rejected: {audio_path} (Difference: {probability_difference})\n")
+                    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    log_file.write(f"[{timestamp}] Rejected: {audio_path} (Difference: {probability_difference})\n")
                 rejected_count += 1
 
         # Write stats for the last book
@@ -143,12 +153,12 @@ def main(args):
             else:
                 # Log the rejected audio path and probability difference
                 with open(log_file_path, 'a') as log_file:
-                    log_file.write(f"Rejected: {audio_path} (Difference: {probability_difference})\n")
+                    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    log_file.write(f"[{timestamp}] Rejected: {audio_path} (Difference: {probability_difference})\n")
                 rejected_count += 1
 
         # Write stats for the last book
         write_book_stats(current_book)
-
 
 if __name__ == "__main__":
     args = parser.parse_args()
