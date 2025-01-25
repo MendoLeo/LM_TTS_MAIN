@@ -18,7 +18,7 @@ parser.add_argument("--chunk_size_s", type=int, default=15, help="Chunk size in 
 parser.add_argument(
     "--probability_difference_threshold",
     type=float,
-    default=-0.2,
+    default=-0.3,
     help="Probability difference threshold for filtering. Default: -0.2 from MMS.",
 )
 parser.add_argument(
