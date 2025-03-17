@@ -6,6 +6,7 @@ from tqdm.auto import tqdm
 from datetime import datetime
 
 from filter_audio import compute_probability_difference, compute_probability_difference_batched
+from utils import write_book_stats
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -73,15 +74,16 @@ def main(args):
     retained_count = 0
     rejected_count = 0
 
-    def write_book_stats(book_name):
-        """Helper function to write stats to the CSV."""
+    """def write_book_stats(book_name):
+        # Helper function to write stats to the CSV
         nonlocal retained_count, rejected_count
         if book_name:
             with open(history_file_path, "a", newline="") as history_file:
                 csv_writer = csv.writer(history_file)
                 csv_writer.writerow([book_name, retained_count, rejected_count])
             retained_count = 0
-            rejected_count = 0
+            rejected_count = 0"""
+            
 
     if not args.batched:
         for audio_path in tqdm(audios, desc=f"Filtering {audio_dir.stem}"):
@@ -90,7 +92,8 @@ def main(args):
 
             # Detect book change and write stats
             if current_book != book_name:
-                write_book_stats(current_book)
+                write_book_stats(current_book, retained_count, rejected_count, history_file_path)
+                #write_book_stats(current_book)
                 current_book = book_name
 
             # Create output directory `output_dir/{book}/{chapter}/`
@@ -119,7 +122,9 @@ def main(args):
                 rejected_count += 1
 
         # Write stats for the last book
-        write_book_stats(current_book)
+        write_book_stats(current_book, retained_count, rejected_count, history_file_path)
+        
+        #write_book_stats(current_book)
 
     else:
         # Read ground truth
