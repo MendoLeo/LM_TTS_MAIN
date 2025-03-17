@@ -1,4 +1,3 @@
-import os
 import re
 
 
@@ -172,7 +171,7 @@ roman_numeral = r"\u2170-\u2179"
 nominal_digit_shapes = r"\u206f"
 
 # Load punctuations from MMS-lab data
-point_path='/home/mendo/Downloads/LM/LM-5/LM-TTS-Main/ztext_cleaner/ponctuations.lst'
+point_path='ztext_cleaner/ponctuations.lst'
 with open(point_path, "r") as punc_f:
     punc_list = punc_f.readlines()
 
